@@ -33,6 +33,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     private Context mContext;
     private static final int permissionRequest = 99;//requests permission to users location
+
     private TextView totalDistanceTraveled;//Used to display total distance traveled
     private TextView currentDistanceTraveled;//Used to display immediate distance traveled
     private TextView workOutTime;//Used to display total time working out
@@ -48,17 +49,21 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private FusedLocationProviderClient getStopLocation;//get stopping location
     private GoogleMap mMap;//Google maps object to place on map
 
-    private NotifyMe notifyMe;//Used to create notifications
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
         mContext=this;
+        SupportMapFragment mapFragment = (SupportMapFragment)getSupportFragmentManager().findFragmentById(R.id.map);
+        ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, permissionRequest);//request permission for location
+        mapFragment.getMapAsync(this);//synchronize the map with this activity
+
+        totalDistanceTraveled = findViewById(R.id.distanceTraveled);
+        workOutTime = findViewById(R.id.workOutTime);
+        fundsGenerated = findViewById(R.id.fundsGenerated);
         workOutTimer = new  WorkOutTimer();
         calculateBudget = new CalculateBudget();
-        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION},permissionRequest);//requests permission to use location
-        notifyMe = new NotifyMe(this);
     }
 
     @Override
@@ -96,13 +101,25 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                     stopLocation = new LatLng(lastLocation.getLatitude(),lastLocation.getLongitude());//gets lat and lng from location variable
                     mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(stopLocation,15));
                     mMap.addMarker(new MarkerOptions().position(stopLocation));//adds a marker at stop location
+                    drawTravel();
+                    totalDistanceTraveled.setText("Traveled: "+calculateBudget.getDistanceTraveled()+" miles");//sets the text to the distance traveled
+                    calculateBudget.displayFundsGenerated(fundsGenerated);//updates the text to the total funds generated
+                    startLocation = stopLocation;//updates the start location to the stop location
                 }
             });
-            notifyMe.creatNotification();
         }
         catch (SecurityException ex){
             totalDistanceTraveled.setText("Unable to find stop location");
         }
+    }
+
+    public void drawTravel(){//draws a line between start and stop locations
+        PolylineOptions distance = new PolylineOptions();
+        distance.add(startLocation);
+        distance.add(stopLocation);
+        distance.color(Color.RED);
+        distance.width(5);
+        mMap.addPolyline(distance);//adds drawn line to map
     }
 
     public void startTimer(View view){//Used to start the workout time
@@ -115,5 +132,20 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         workOutTimer.resetWorkoutTimer();//resets the workout timer
     }
 
+    public void notifyMe(String title, String text,String id){
+        NotificationCompat.Builder notify = new NotificationCompat.Builder(mContext,"1");
+        NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(mContext);
+        NotificationChannel channel = new NotificationChannel(id,"test", NotificationManager.IMPORTANCE_DEFAULT);
+        NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        notify.setSmallIcon(R.drawable.cast_ic_notification_small_icon);
+        notify.setContentTitle(title);
+        notify.setContentText(text);
+        notify.setPriority(NotificationCompat.PRIORITY_DEFAULT);
+
+        channel.setDescription("test");
+        notificationManager.createNotificationChannel(channel);
+
+        notificationManagerCompat.notify(1,notify.build());
+    }
 
 }

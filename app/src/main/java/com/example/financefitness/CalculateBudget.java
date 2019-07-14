@@ -5,13 +5,13 @@ import com.google.maps.android.SphericalUtil;
 import com.google.android.gms.maps.model.LatLng;
 
 public class CalculateBudget {
-    double fundsPerMinute;//Used to calculate money earned working out
-    double fundsPerMile;//Used to calculate money earned running
-    double distanceTraveled;//Used to hold distance travelled
-    double timeWorkedOut;//Used to hold workout time duration
-    double fundsGeneratedWorkingOut;//Used to hold total funds generated working out
-    double fundsGeneratedRunning;//Used to hold total funds generated running
-    double totalFundsGenerated;//Used to hold total funds generated working out and running
+    private double fundsPerMinute;//Used to calculate money earned working out
+    private double fundsPerMile;//Used to calculate money earned running
+    private double distanceTraveled;//Used to hold distance travelled
+    private double timeWorkedOut;//Used to hold workout time duration
+    private double fundsGeneratedWorkingOut;//Used to hold total funds generated working out
+    private double fundsGeneratedRunning;//Used to hold total funds generated running
+    private double totalFundsGenerated;//Used to hold total funds generated working out and running
 
     public CalculateBudget(){
         fundsPerMinute = 0.84;
@@ -34,5 +34,13 @@ public class CalculateBudget {
     public void displayFundsGenerated(TextView textView){
         totalFundsGenerated = fundsGeneratedWorkingOut + fundsGeneratedRunning;
         textView.setText("$"+String.format("%.2f",totalFundsGenerated));
+    }
+
+    public double getDistanceTraveled(){
+        return distanceTraveled;
+    }
+
+    public double getTimeWorkedOut(){
+        return timeWorkedOut;
     }
 }
