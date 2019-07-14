@@ -31,7 +31,7 @@ public class CalculateBudget {
         fundsGeneratedRunning = distanceTraveled*fundsPerMile;
     }
 
-    public void DisplayFundsGenerated(TextView textView){
+    public void displayFundsGenerated(TextView textView){
         totalFundsGenerated = fundsGeneratedWorkingOut + fundsGeneratedRunning;
         textView.setText("$"+String.format("%.2f",totalFundsGenerated));
     }

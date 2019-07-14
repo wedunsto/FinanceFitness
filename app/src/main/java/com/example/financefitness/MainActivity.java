@@ -1,12 +1,119 @@
 package com.example.financefitness;
 
+import android.Manifest;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.content.Context;
+import android.graphics.Color;
+import android.location.Location;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.NotificationManagerCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.TextView;
 
-public class MainActivity extends AppCompatActivity {
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.PolylineOptions;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+
+import java.util.Calendar;
+
+public class MainActivity extends AppCompatActivity implements OnMapReadyCallback{
+
+    private Context mContext;
+    private static final int permissionRequest = 99;//requests permission to users location
+    private TextView totalDistanceTraveled;//Used to display total distance traveled
+    private TextView currentDistanceTraveled;//Used to display immediate distance traveled
+    private TextView workOutTime;//Used to display total time working out
+    private TextView fundsGenerated;//Used to display total funds generated working out and running
+
+    private WorkOutTimer workOutTimer;//Used to gain access to class variables and methods
+    private CalculateBudget calculateBudget;//Used to gain access to class variables and methods
+
+    private LatLng startLocation;//save the coordinates of starting location
+    private LatLng stopLocation;//save the coordinates of the stopping location
+    private Location lastLocation;//get last location requested
+    private FusedLocationProviderClient getStartLocation;//get starting location
+    private FusedLocationProviderClient getStopLocation;//get stopping location
+    private GoogleMap mMap;//Google maps object to place on map
+
+    private NotifyMe notifyMe;//Used to create notifications
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        mContext=this;
+        workOutTimer = new  WorkOutTimer();
+        calculateBudget = new CalculateBudget();
+        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION},permissionRequest);//requests permission to use location
+        notifyMe = new NotifyMe(this);
     }
+
+    @Override
+    public void onMapReady(GoogleMap googleMap) {//sets to google map to the desired map
+        mMap = googleMap;
+    }
+
+    public void setStartLocation(View view){//Used to set the start location on the google map
+        getStartLocation = LocationServices.getFusedLocationProviderClient(this);
+        try{
+            final Task<Location> task = getStartLocation.getLastLocation();
+            task.addOnCompleteListener(this, new OnCompleteListener<Location>() {
+                @Override
+                public void onComplete(@NonNull Task<Location> task) {
+                   lastLocation = task.getResult();//gets location
+                   startLocation = new LatLng(lastLocation.getLatitude(),lastLocation.getLongitude());//gets lat and lng from location variable
+                   mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(startLocation,15));
+                   mMap.addMarker(new MarkerOptions().position(startLocation));//adds a marker at start location
+                }
+            });
+        }
+        catch (SecurityException ex){
+            totalDistanceTraveled.setText("Unable to find start location");
+        }
+    }
+
+    public void setStopLocation(View view){//Used to set the stop location  on the google map
+        getStopLocation = LocationServices.getFusedLocationProviderClient(this);
+        try{
+            final Task<Location> task = getStopLocation.getLastLocation();
+            task.addOnCompleteListener(this, new OnCompleteListener<Location>() {
+                @Override
+                public void onComplete(@NonNull Task<Location> task) {
+                    lastLocation = task.getResult();//gets location
+                    stopLocation = new LatLng(lastLocation.getLatitude(),lastLocation.getLongitude());//gets lat and lng from location variable
+                    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(stopLocation,15));
+                    mMap.addMarker(new MarkerOptions().position(stopLocation));//adds a marker at stop location
+                }
+            });
+            notifyMe.creatNotification();
+        }
+        catch (SecurityException ex){
+            totalDistanceTraveled.setText("Unable to find stop location");
+        }
+    }
+
+    public void startTimer(View view){//Used to start the workout time
+        workOutTimer.startWorkoutTimer(workOutTime);
+    }
+
+    public void stopTimer(View view){//Used to stop the workout timer
+        calculateBudget.calculateTimeWorkedOut(workOutTimer);//Used to calculate the money earned working out
+        calculateBudget.displayFundsGenerated(fundsGenerated);//displays total funds earned
+        workOutTimer.resetWorkoutTimer();//resets the workout timer
+    }
+
+
 }
