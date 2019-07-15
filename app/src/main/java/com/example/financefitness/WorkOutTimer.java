@@ -13,7 +13,7 @@ public class WorkOutTimer {
         countdown = new CountDownTimer(3_600_000,1000){//displays time spent working out
             @Override
             public void onTick(long millisUntilFinished) {
-                totalTimeWorkedOut = (59 -(millisUntilFinished/6000));
+                totalTimeWorkedOut = (59-((millisUntilFinished/60000)));
                 secondsPassed +=1;
                 if(secondsPassed>59){//when seconds left equals 0 reset to 59
                     secondsPassed=0;

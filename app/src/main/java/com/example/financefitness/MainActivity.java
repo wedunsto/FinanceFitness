@@ -128,24 +128,28 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     public void stopTimer(View view){//Used to stop the workout timer
         calculateBudget.calculateTimeWorkedOut(workOutTimer);//Used to calculate the money earned working out
+        notifyMe("Workout Update"
+                ,"Workout Duration: "+workOutTimer.getTotalTimeWorkedOut()
+                ,"Displays how long you worked out"
+                ,"1");
+        calculateBudget.calculateTimeWorkedOut(workOutTimer);
         calculateBudget.displayFundsGenerated(fundsGenerated);//displays total funds earned
         workOutTimer.resetWorkoutTimer();//resets the workout timer
     }
 
-    public void notifyMe(String title, String text,String id){
-        NotificationCompat.Builder notify = new NotificationCompat.Builder(mContext,"1");
+    public void notifyMe(String title, String text,String description,String id){//generate notification for time worked out or running distance
+        NotificationCompat.Builder notify = new NotificationCompat.Builder(mContext,id);
         NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(mContext);
-        NotificationChannel channel = new NotificationChannel(id,"test", NotificationManager.IMPORTANCE_DEFAULT);
+        NotificationChannel channel = new NotificationChannel(id,title, NotificationManager.IMPORTANCE_DEFAULT);
         NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         notify.setSmallIcon(R.drawable.cast_ic_notification_small_icon);
         notify.setContentTitle(title);
         notify.setContentText(text);
         notify.setPriority(NotificationCompat.PRIORITY_DEFAULT);
 
-        channel.setDescription("test");
+        channel.setDescription(description);
         notificationManager.createNotificationChannel(channel);
-
-        notificationManagerCompat.notify(1,notify.build());
+        notificationManagerCompat.notify(Integer.parseInt(id),notify.build());
     }
 
 }
