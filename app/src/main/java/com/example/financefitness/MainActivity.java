@@ -13,6 +13,9 @@ import android.support.v4.app.NotificationManagerCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -39,6 +42,11 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private TextView workOutTime;//Used to display total time working out
     private TextView fundsGenerated;//Used to display total funds generated working out and running
 
+    private Button startRunningButton;//Used to augment start running button
+    private Button stopRunningButton;//Used to augment stop running button
+    private Button startWorkout;//Used to augment start workout button
+    private Button stopWorkout;//Used to augment stop workout button
+
     private WorkOutTimer workOutTimer;//Used to gain access to class variables and methods
     private CalculateBudget calculateBudget;//Used to gain access to class variables and methods
 
@@ -62,6 +70,11 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         totalDistanceTraveled = findViewById(R.id.distanceTraveled);
         workOutTime = findViewById(R.id.workOutTime);
         fundsGenerated = findViewById(R.id.fundsGenerated);
+        startRunningButton = findViewById(R.id.startButton);
+        stopRunningButton = findViewById(R.id.stopButton);
+        startWorkout = findViewById(R.id.startWorkOut);
+        stopWorkout = findViewById(R.id.stopWorkOut);
+
         workOutTimer = new  WorkOutTimer();
         calculateBudget = new CalculateBudget();
     }
@@ -72,6 +85,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
     public void setStartLocation(View view){//Used to set the start location on the google map
+        startRunningButton.setText("Lets start running!");
         getStartLocation = LocationServices.getFusedLocationProviderClient(this);
         try{
             final Task<Location> task = getStartLocation.getLastLocation();
@@ -91,6 +105,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
     public void setStopLocation(View view){//Used to set the stop location  on the google map
+        startRunningButton.setText("Start Traveling");
         getStopLocation = LocationServices.getFusedLocationProviderClient(this);
         try{
             final Task<Location> task = getStopLocation.getLastLocation();
@@ -102,6 +117,11 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                     mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(stopLocation,15));
                     mMap.addMarker(new MarkerOptions().position(stopLocation));//adds a marker at stop location
                     drawTravel();
+                    notifyMe("Running Update"
+                            ,"Ran for: "+calculateBudget.getDistanceTraveled()+" miles"
+                            ,"Displays how far you ran"
+                            ,"2");
+                    calculateBudget.calculateDistanceTraveled(startLocation,stopLocation);//calculates funds generated running
                     totalDistanceTraveled.setText("Traveled: "+calculateBudget.getDistanceTraveled()+" miles");//sets the text to the distance traveled
                     calculateBudget.displayFundsGenerated(fundsGenerated);//updates the text to the total funds generated
                     startLocation = stopLocation;//updates the start location to the stop location
@@ -123,11 +143,12 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
     public void startTimer(View view){//Used to start the workout time
+        startWorkout.setText("Lets start working out!");
         workOutTimer.startWorkoutTimer(workOutTime);
     }
 
     public void stopTimer(View view){//Used to stop the workout timer
-        calculateBudget.calculateTimeWorkedOut(workOutTimer);//Used to calculate the money earned working out
+        startWorkout.setText("Start Workout");
         notifyMe("Workout Update"
                 ,"Workout Duration: "+workOutTimer.getTotalTimeWorkedOut()
                 ,"Displays how long you worked out"

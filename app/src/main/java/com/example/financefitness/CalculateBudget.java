@@ -23,17 +23,18 @@ public class CalculateBudget {
 
     public void calculateTimeWorkedOut(WorkOutTimer workOutTimer){//Used to display additional money earned working out
         timeWorkedOut = workOutTimer.getTotalTimeWorkedOut();
-        fundsGeneratedWorkingOut += (timeWorkedOut*fundsPerMinute);
+        fundsGeneratedWorkingOut = (timeWorkedOut*fundsPerMinute);
+        totalFundsGenerated += fundsGeneratedWorkingOut;
     }
 
     public void calculateDistanceTraveled(LatLng start, LatLng stop){//Used to display additional money earned running
         distanceTraveled = (SphericalUtil.computeDistanceBetween(start,stop)) * (0.000621371);//gets distance traveled walking in miles
-        fundsGeneratedRunning += (distanceTraveled*fundsPerMile);
+        fundsGeneratedRunning = (distanceTraveled*fundsPerMile);
+        totalFundsGenerated += fundsGeneratedRunning;
     }
 
     public void displayFundsGenerated(TextView textView){
-        totalFundsGenerated = fundsGeneratedWorkingOut + fundsGeneratedRunning;
-        textView.setText("$"+String.format("%.2f",totalFundsGenerated));
+        textView.setText("$"+String.format("%.2f",totalFundsGenerated));//sets the text view to the total funds generated
     }
 
     public double getDistanceTraveled(){
