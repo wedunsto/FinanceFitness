@@ -5,6 +5,7 @@ import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.Context;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
@@ -122,7 +123,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                             ,"Displays how far you ran"
                             ,"2");
                     calculateBudget.calculateDistanceTraveled(startLocation,stopLocation);//calculates funds generated running
-                    totalDistanceTraveled.setText("Traveled: "+calculateBudget.getDistanceTraveled()+" miles");//sets the text to the distance traveled
+                    totalDistanceTraveled.setText("Traveled: "+calculateBudget.getDistanceTraveled()+" miles"+"\nMoney earned: "+calculateBudget.getFundsGeneratedRunning());//sets the text to the distance traveled
                     calculateBudget.displayFundsGenerated(fundsGenerated);//updates the text to the total funds generated
                     startLocation = stopLocation;//updates the start location to the stop location
                 }
@@ -155,6 +156,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 ,"1");
         calculateBudget.calculateTimeWorkedOut(workOutTimer);
         calculateBudget.displayFundsGenerated(fundsGenerated);//displays total funds earned
+        workOutTime.setText("Worked out for: "+workOutTimer.getTotalTimeWorkedOut()+"\nMoney earned: "+calculateBudget.getFundsGeneratedWorkingOut());
         workOutTimer.resetWorkoutTimer();//resets the workout timer
     }
 

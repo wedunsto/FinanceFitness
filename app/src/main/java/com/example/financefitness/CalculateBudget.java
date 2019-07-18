@@ -34,10 +34,18 @@ public class CalculateBudget {
     }
 
     public void displayFundsGenerated(TextView textView){
-        textView.setText("$"+String.format("%.2f",totalFundsGenerated));//sets the text view to the total funds generated
+        textView.setText("Total funds generated: "+"$"+String.format("%.2f",totalFundsGenerated));//sets the text view to the total funds generated
     }
 
     public double getDistanceTraveled(){
         return distanceTraveled;
+    }
+
+    public double getFundsGeneratedWorkingOut(){
+        return fundsGeneratedWorkingOut;
+    }
+
+    public double getFundsGeneratedRunning(){
+        return fundsGeneratedRunning;
     }
 }
