@@ -124,7 +124,7 @@
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.57" />
+        app:layout_constraintVertical_bias="0.586" />
 
     <TextView
         android:id="@+id/workOutTime"
@@ -144,7 +144,7 @@
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.574" />
+        app:layout_constraintVertical_bias="0.586" />
 
     <TextView
         android:id="@+id/fundsGenerated"
@@ -194,7 +194,7 @@
         app:srcCompat="@drawable/lifting" />
 
     <TextView
-        android:id="@+id/textView"
+        android:id="@+id/workOutQuote"
         android:layout_width="130dp"
         android:layout_height="291dp"
         android:layout_marginStart="8dp"
@@ -202,13 +202,13 @@
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
         android:background="#4F111111"
+        android:fontFamily="@font/workout"
         android:text="The only bad work out is the one that didn't happen"
         android:textAlignment="center"
         android:textAllCaps="true"
-        android:textColor="#A80E0E"
+        android:textColor="#2BD80C"
         android:textColorHighlight="#E91E63"
         android:textSize="27dp"
-        android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@+id/startWorkOut"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"

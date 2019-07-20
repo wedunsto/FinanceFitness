@@ -118,12 +118,13 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                     mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(stopLocation,15));
                     mMap.addMarker(new MarkerOptions().position(stopLocation));//adds a marker at stop location
                     drawTravel();
-                    notifyMe("Running Update"
-                            ,"Ran for: "+calculateBudget.getDistanceTraveled()+" miles"
-                            ,"Displays how far you ran"
-                            ,"2");
                     calculateBudget.calculateDistanceTraveled(startLocation,stopLocation);//calculates funds generated running
-                    totalDistanceTraveled.setText("Traveled: "+calculateBudget.getDistanceTraveled()+" miles"+"\nMoney earned: "+calculateBudget.getFundsGeneratedRunning());//sets the text to the distance traveled
+                    notifyMe("Running Update"
+                            ,"Ran: ~"+String.format("%.0f",calculateBudget.getDistanceTraveled())+" miles"
+                            ,"Displays how far you ran"
+                            ,"2"
+                            ,R.drawable.run);
+                    totalDistanceTraveled.setText("Ran: ~"+String.format("%.0f",calculateBudget.getDistanceTraveled())+" miles"+"\nMoney earned: $"+String.format("%.2f",calculateBudget.getFundsGeneratedRunning()));//sets the text to the distance traveled
                     calculateBudget.displayFundsGenerated(fundsGenerated);//updates the text to the total funds generated
                     startLocation = stopLocation;//updates the start location to the stop location
                 }
@@ -151,21 +152,22 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     public void stopTimer(View view){//Used to stop the workout timer
         startWorkout.setText("Start Workout");
         notifyMe("Workout Update"
-                ,"Workout Duration: "+workOutTimer.getTotalTimeWorkedOut()
+                ,"Workout Duration: "+workOutTimer.getTotalTimeWorkedOut()+" Minutes"
                 ,"Displays how long you worked out"
-                ,"1");
+                ,"1"
+                ,R.drawable.lift);
         calculateBudget.calculateTimeWorkedOut(workOutTimer);
         calculateBudget.displayFundsGenerated(fundsGenerated);//displays total funds earned
-        workOutTime.setText("Worked out for: "+workOutTimer.getTotalTimeWorkedOut()+"\nMoney earned: "+calculateBudget.getFundsGeneratedWorkingOut());
+        workOutTime.setText("Worked out for: "+workOutTimer.getTotalTimeWorkedOut()+"\nMoney earned: $"+String.format("%.2f",calculateBudget.getFundsGeneratedWorkingOut()));
         workOutTimer.resetWorkoutTimer();//resets the workout timer
     }
 
-    public void notifyMe(String title, String text,String description,String id){//generate notification for time worked out or running distance
+    public void notifyMe(String title, String text,String description,String id, int icon){//generate notification for time worked out or running distance
         NotificationCompat.Builder notify = new NotificationCompat.Builder(mContext,id);
         NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(mContext);
         NotificationChannel channel = new NotificationChannel(id,title, NotificationManager.IMPORTANCE_DEFAULT);
         NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-        notify.setSmallIcon(R.drawable.cast_ic_notification_small_icon);
+        notify.setSmallIcon(icon);
         notify.setContentTitle(title);
         notify.setContentText(text);
         notify.setPriority(NotificationCompat.PRIORITY_DEFAULT);
